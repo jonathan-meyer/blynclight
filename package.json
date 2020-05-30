@@ -1,0 +1,23 @@
+{
+  "name": "blynclight",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ."
+  },
+  "author": "Jonathan Meyer <jon@stej.com>",
+  "license": "ISC",
+  "dependencies": {
+    "node-hid": "^1.2.0",
+    "typescript": "^3.9.3"
+  },
+  "devDependencies": {
+    "@types/node-hid": "^1.2.0"
+  },
+  "description": "Blinklight Controller",
+  "keywords": [
+    "blynklinght",
+    "embrava"
+  ]
+}
