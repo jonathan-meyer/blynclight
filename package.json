@@ -19,5 +19,13 @@
   "keywords": [
     "blynklinght",
     "embrava"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonathan-meyer/blynclight.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonathan-meyer/blynclight/issues"
+  },
+  "homepage": "https://github.com/jonathan-meyer/blynclight#readme"
 }
