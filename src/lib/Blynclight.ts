@@ -1,8 +1,8 @@
+import Color from "color";
 import { HID } from "node-hid";
-import Color from "./Color";
-import { Logger, LoggerFactory } from "./Logger";
+import { LoggerFactory } from "./Logger";
 
-const log: Logger = LoggerFactory.getLogger("blynclight:device");
+const log = LoggerFactory.getLogger("blynclight:device");
 
 class Blynclight {
   public static readonly vid: number = 0x0e53;
@@ -14,12 +14,13 @@ class Blynclight {
     this.device = new HID(vid, pid);
   }
 
-  set(color: Color) {
+  setColor(color: Color) {
+    //log.debug(`[set: ${color}]`);
     this.device.write([
       0x00,
-      color.red(), // red
-      color.green(), // blue
-      color.blue(), // green
+      color.rgb().red(), // red
+      color.rgb().blue(), // green
+      color.rgb().green(), // blue
       0x00, // blink
       0x00,
       0x00,
@@ -28,12 +29,18 @@ class Blynclight {
     ]);
   }
 
+  getColor() {
+    return Color("black");
+  }
+
   on(): void {
-    this.set(new Color(255, 255, 255));
+    log.debug("[on]");
+    this.setColor(Color("white"));
   }
 
   off(): void {
-    this.set(new Color(0, 0, 0));
+    log.debug("[off]");
+    this.setColor(Color("black"));
   }
 }
 
