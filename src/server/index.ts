@@ -13,10 +13,10 @@ const wheel = new ColorWheel();
 
 let t: NodeJS.Timeout;
 
-const startWheel = (interval: number) => {
+const startWheel = (interval?: number) => {
   t = setInterval(() => {
     light.setColor(wheel.next());
-  }, interval);
+  }, interval || 25);
 };
 
 const stopWheel = () => {
@@ -104,9 +104,9 @@ app.get("/wheel/stop", (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/wheel/:ms(\\d+)?", (req, res) => {
+app.get("/wheel/:ms(\\d+)", (req, res) => {
   const { ms } = req.params;
-  const interval = Number(ms || 25);
+  const interval = Number(ms);
 
   stopWheel();
   startWheel(interval);
@@ -123,4 +123,4 @@ process.on("SIGINT", function () {
   light.off();
 });
 
-export { app, light };
+export { app, light, startWheel, stopWheel };
