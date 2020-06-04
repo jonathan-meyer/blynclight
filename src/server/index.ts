@@ -1,9 +1,12 @@
+import bodyParser from "body-parser";
 import Color from "color";
+import errorHandler from "errorhandler";
 import express from "express";
 import morgan from "morgan";
 import Blynclight from "../lib/Blynclight";
 import ColorWheel from "../lib/ColorWheel";
 import { LoggerFactory } from "../lib/Logger";
+import lightRouter from "./light";
 
 const log = LoggerFactory.getLogger("blynclight:server");
 const app = express();
@@ -24,6 +27,10 @@ const stopWheel = () => {
 };
 
 app.use(morgan("common"));
+app.use(bodyParser.json());
+app.use(errorHandler());
+
+app.use("/light", lightRouter(light));
 
 app.get("/", (req, res) => {
   res.json({
@@ -114,13 +121,10 @@ app.get("/wheel/:ms(\\d+)", (req, res) => {
   res.json({ interval });
 });
 
-app.get("*", (req, res) => {
-  res.sendStatus(418);
-});
-
 process.on("SIGINT", function () {
   stopWheel();
   light.off();
 });
 
 export { app, light, startWheel, stopWheel };
+

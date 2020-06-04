@@ -8,6 +8,7 @@ module.exports = {
       env: {
         NODE_ENV: "development",
         DEBUG: "blynclight:*,",
+        PORT: 1234
       },
     },
   ],
