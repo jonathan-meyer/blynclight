@@ -5,20 +5,8 @@ import { LoggerFactory } from "../lib/Logger";
 
 const logger = LoggerFactory.getLogger("blynclight:light:router");
 
-let state = {
-  color: Color(),
-  program: null,
-};
-
-const updateLight = (light: Blynclight, newState: any) => {
-  state = Object.assign(state, newState);
-
-  if (state.color) {
-    light.setColor(state.color);
-  }
-
-  if (state.program) {
-  }
+const getStatus = (light: Blynclight) => {
+  return { color: light.getColor().toString() };
 };
 
 export default (light: Blynclight): Router =>
@@ -26,31 +14,40 @@ export default (light: Blynclight): Router =>
     .Router()
 
     .get("/", (req, res) => {
-      res.json(state);
+      res.json(getStatus(light));
     })
 
     .post("/", (req, res) => {
-      const { color, rgb, program } = req.body;
+      const { power, color, rgb } = req.body;
+
+      logger.debug({ power, color, rgb });
+
+      if (/^on$/i.test(power)) {
+        light.on();
+      }
+
+      if (/^off$/.test(power)) {
+        light.off();
+      }
 
       if (color) {
-        updateLight(light, { color: Color(color) });
+        light.setColor(Color(color));
       }
 
       if (rgb) {
         if (/[0-9a-fA-F]{6}/.test(rgb)) {
-          updateLight(light, { color: Color.rgb(`#${rgb}`) });
+          light.setColor(Color.rgb(`#${rgb}`));
         }
 
         if (Array.isArray(rgb)) {
           const [r, g, b] = rgb;
-          updateLight(light, { color: state.color = Color.rgb(r, g, b) });
+          light.setColor(Color.rgb(r, g, b));
         }
       }
 
-      if (program) {
-        const [cmd, ...args] = program.split(",");
-        logger.debug({ cmd, args });
-      }
+      res.json(getStatus(light));
+    })
 
-      res.json(state);
+    .get("/*", (req, res) => {
+      res.status(404).json({ 404: "Not Found" });
     });

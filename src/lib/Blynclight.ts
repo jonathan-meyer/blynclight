@@ -8,14 +8,17 @@ class Blynclight {
   public static readonly vid: number = 0x0e53;
   public static readonly pid: number = 0x2516;
 
+  private color: Color;
   private device: HID;
 
   constructor(vid: number, pid: number) {
+    this.color = new Color();
     this.device = new HID(vid, pid);
   }
 
   setColor(color: Color) {
     //log.debug(`[set: ${color}]`);
+    this.color = color;
     this.device.write([
       0x00,
       color.rgb().red(), // red
@@ -30,7 +33,7 @@ class Blynclight {
   }
 
   getColor() {
-    return Color("black");
+    return this.color;
   }
 
   on(): void {

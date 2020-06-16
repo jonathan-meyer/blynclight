@@ -1,13 +1,17 @@
 import { LoggerFactory } from "./lib/Logger";
-import { app, light, startWheel } from "./server";
+import { app, light, programs } from "./server";
 
 const port = process.env.PORT || 3000;
-const log = LoggerFactory.getLogger("blynclight:main");
+const logger = LoggerFactory.getLogger("blynclight:main");
 
 light.on();
+programs.start("wheel");
 
-app.listen(port, () => {
-  log.info("Listeing to port: %d", port);
+process.on("SIGINT", function () {
+  logger.debug("[stopping all programs]");
+  programs.stopAll();
 });
 
-startWheel();
+app.listen(port, () => {
+  logger.info("Listeing to port: %d", port);
+});

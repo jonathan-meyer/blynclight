@@ -1,130 +1,32 @@
 import bodyParser from "body-parser";
-import Color from "color";
 import errorHandler from "errorhandler";
 import express from "express";
 import morgan from "morgan";
 import Blynclight from "../lib/Blynclight";
-import ColorWheel from "../lib/ColorWheel";
 import { LoggerFactory } from "../lib/Logger";
+import ProgramList from "../lib/ProgramList";
+import WheelProgram from "../lib/WheelProgram";
 import lightRouter from "./light";
+import programRouter from "./program";
 
 const log = LoggerFactory.getLogger("blynclight:server");
 const app = express();
 
 const light = new Blynclight(Blynclight.vid, Blynclight.pid);
-const wheel = new ColorWheel();
+const programs = new ProgramList();
 
-let t: NodeJS.Timeout;
-
-const startWheel = (interval?: number) => {
-  t = setInterval(() => {
-    light.setColor(wheel.next());
-  }, interval || 25);
-};
-
-const stopWheel = () => {
-  if (t) clearInterval(t);
-};
+programs.addLight(light);
+programs.addProgram(new WheelProgram(light));
 
 app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(errorHandler());
 
 app.use("/light", lightRouter(light));
+app.use("/program", programRouter(programs));
 
-app.get("/", (req, res) => {
-  res.json({
-    color: light.getColor(),
-  });
+app.get("/*", (req, res) => {
+  res.status(404).json({ 404: "Not Found" });
 });
 
-app.get("/on", (req, res) => {
-  stopWheel();
-  light.on();
-
-  res.sendStatus(200);
-});
-
-app.get("/off", (req, res) => {
-  stopWheel();
-  light.off();
-
-  res.sendStatus(200);
-});
-
-app.get("/rgb/:hex([0-9a-fA-F]{6})", (req, res) => {
-  const { hex } = req.params;
-  const color = Color.rgb(`#${hex}`);
-
-  stopWheel();
-
-  light.setColor(color);
-  res.json({ hex, color });
-});
-
-app.get("/rgb/:r(\\d+)/:g(\\d+)/:b(\\d+)", (req, res) => {
-  const { r, g, b } = req.params;
-  const color = Color.rgb(Number(r), Number(g), Number(b));
-
-  stopWheel();
-  light.setColor(color);
-
-  res.json({ rgb: [r, g, b], color });
-});
-
-app.get("/rgb*", (req, res) => {
-  res.json({
-    rgb: {
-      uris: [
-        "/rgb/{dec red value}/{dec green value}/{dec blue value}",
-        "/rgb/{hex color value}",
-      ],
-    },
-  });
-});
-
-app.get("/color/:name", (req, res) => {
-  try {
-    const { name } = req.params;
-    const color = Color.rgb(name);
-
-    stopWheel();
-    light.setColor(color);
-
-    res.json({ name, color });
-  } catch ({ message }) {
-    res.status(400).json({ message });
-  }
-});
-
-app.get("/color*", (req, res) => {
-  res.json({
-    color: {
-      uris: ["/color/{color name}"],
-    },
-  });
-});
-
-app.get("/wheel/stop", (req, res) => {
-  stopWheel();
-
-  res.sendStatus(200);
-});
-
-app.get("/wheel/:ms(\\d+)", (req, res) => {
-  const { ms } = req.params;
-  const interval = Number(ms);
-
-  stopWheel();
-  startWheel(interval);
-
-  res.json({ interval });
-});
-
-process.on("SIGINT", function () {
-  stopWheel();
-  light.off();
-});
-
-export { app, light, startWheel, stopWheel };
-
+export { app, light, programs };
