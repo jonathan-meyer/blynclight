@@ -6,12 +6,19 @@ import Program from "./Program";
 const logger = LoggerFactory.getLogger("blynclight:wheel-program");
 
 class WheelProgram extends Program {
-  wheel: ColorWheel = new ColorWheel();
+  readonly wheel: ColorWheel = new ColorWheel();
+  private light: Blynclight;
 
   constructor(light: Blynclight) {
     super("wheel");
 
-    logger.debug(light.getColor());
+    logger.debug("[CTOR]");
+
+    this.light = light;
+  }
+
+  run(): void {
+    this.light.setColor(this.wheel.next());
   }
 }
 

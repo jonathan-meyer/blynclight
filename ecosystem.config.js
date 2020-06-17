@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "Blinklight Server",
+      name: "Blynclight Server",
       script: "./dist/index.js",
       watch: "./dist/",
       instances: 1,

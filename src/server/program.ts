@@ -1,16 +1,16 @@
 import express, { Router } from "express";
 import { LoggerFactory } from "../lib/Logger";
-import ProgramList from "../lib/ProgramList";
+import ProgramManager from "../lib/ProgramManager";
 
 const logger = LoggerFactory.getLogger("blynclight:program:router");
 
-const getStatus = (programs: ProgramList) => {
+const getStatus = (programs: ProgramManager) => {
   return {
-    programs: programs.list(),
+    programs: programs.map((program) => program.toString()),
   };
 };
 
-export default (programs: ProgramList): Router =>
+export default (programs: ProgramManager): Router =>
   express
     .Router()
 
@@ -28,7 +28,7 @@ export default (programs: ProgramList): Router =>
       }
 
       if (stop) {
-        programs.stop(start);
+        programs.stop(stop);
       }
 
       res.json(getStatus(programs));
