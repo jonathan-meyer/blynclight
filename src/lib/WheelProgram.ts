@@ -17,8 +17,18 @@ class WheelProgram extends Program {
     this.light = light;
   }
 
+  onStart(): void {
+    logger.debug("[start]");
+    this.light.on();
+  }
+
   run(): void {
     this.light.setColor(this.wheel.next());
+  }
+
+  onStop(): void {
+    logger.debug("[stop]");
+    this.light.off();
   }
 }
 

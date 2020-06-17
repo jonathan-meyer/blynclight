@@ -4,7 +4,7 @@ import { app, light, programs } from "./server";
 const port = process.env.PORT || 3000;
 const logger = LoggerFactory.getLogger("blynclight:main");
 
-programs.start("wheel");
+programs.start("usa");
 
 process.on("SIGINT", function () {
   logger.debug("[stopping all programs]");

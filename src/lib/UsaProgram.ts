@@ -7,8 +7,16 @@ const logger = LoggerFactory.getLogger("blynclight:usa-program");
 
 class UsaProgram extends Program {
   private light: Blynclight;
-  private color: Color = new Color("red");
-  private value: number = 0;
+
+  private colors: Color[] = [
+    Color("red"),
+    Color("red"),
+    Color("white"),
+    Color("white"),
+    Color("blue"),
+    Color("blue"),
+  ];
+  private mix: number = 0;
 
   constructor(light: Blynclight) {
     super("usa");
@@ -19,20 +27,19 @@ class UsaProgram extends Program {
   }
 
   run(): void {
-    if (this.value >= 0 && this.value < 85) {
-      this.color = new Color("red");
-    }
+    this.light.setColor(this.colors[0].mix(this.colors[1], this.mix));
+    this.mix = this.mix + 0.03;
 
-    if (this.value >= 85 && this.value < 170) {
-      this.color = new Color("white");
+    if (this.mix > 1) {
+      let c = this.colors.shift();
+      if (c) this.colors.push(c);
+      this.mix = 0;
     }
+  }
 
-    if (this.value >= 170 && this.value < 255) {
-      this.color = new Color("blue");
-    }
-
-    this.light.setColor(this.color);
-    this.value = (this.value + 1) % 255;
+  onStop(): void {
+    logger.debug("[stop]");
+    this.light.off();
   }
 }
 

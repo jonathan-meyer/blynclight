@@ -5,16 +5,12 @@ import { LoggerFactory } from "../lib/Logger";
 
 const logger = LoggerFactory.getLogger("blynclight:light:router");
 
-const getStatus = (light: Blynclight) => {
-  return { color: light.getColor().toString() };
-};
-
 export default (light: Blynclight): Router =>
   express
     .Router()
 
     .get("/", (req, res) => {
-      res.json(getStatus(light));
+      res.json(light);
     })
 
     .post("/", (req, res) => {
@@ -45,9 +41,9 @@ export default (light: Blynclight): Router =>
         }
       }
 
-      res.json(getStatus(light));
+      res.json(light);
     })
 
-    .get("/*", (req, res) => {
+    .get("*", (req, res) => {
       res.status(404).json({ 404: "Not Found" });
     });

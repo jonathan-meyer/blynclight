@@ -45,6 +45,14 @@ class Blynclight {
     log.debug("[off]");
     this.setColor(Color("black"));
   }
+
+  toJSON() {
+    return {
+      power: "on",
+      color: this.color.hex(),
+      colorName: this.color.keyword(),
+    };
+  }
 }
 
 export default Blynclight;

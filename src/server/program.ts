@@ -4,22 +4,16 @@ import ProgramManager from "../lib/ProgramManager";
 
 const logger = LoggerFactory.getLogger("blynclight:program:router");
 
-const getStatus = (programs: ProgramManager) => {
-  return {
-    programs: programs.map((program) => program.toString()),
-  };
-};
-
 export default (programs: ProgramManager): Router =>
   express
     .Router()
 
     .get("/", (req, res) => {
-      res.json(getStatus(programs));
+      res.json(programs);
     })
 
     .post("/", (req, res) => {
-      const { start, stop } = req.body;
+      const { start, stop, stopAll } = req.body;
 
       logger.debug({ start, stop });
 
@@ -31,9 +25,13 @@ export default (programs: ProgramManager): Router =>
         programs.stop(stop);
       }
 
-      res.json(getStatus(programs));
+      if (stopAll === "true") {
+        programs.stopAll();
+      }
+
+      res.json(programs);
     })
 
-    .get("/*", (req, res) => {
+    .get("*", (req, res) => {
       res.status(404).json({ 404: "Not Found" });
     });

@@ -8,7 +8,7 @@ class ProgramManager {
 
   add(program: Program): void {
     logger.debug("[add]");
-    
+
     this.programs.push(program);
   }
 
@@ -39,6 +39,10 @@ class ProgramManager {
     logger.debug("[stop all]");
 
     this.programs.map((program) => program.stop());
+  }
+
+  toJSON() {
+    return this.programs;
   }
 }
 
