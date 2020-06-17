@@ -9,6 +9,7 @@ programs.start("wheel");
 process.on("SIGINT", function () {
   logger.debug("[stopping all programs]");
   programs.stopAll();
+  light.off();
   process.exit();
 });
 
