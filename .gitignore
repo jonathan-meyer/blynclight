@@ -117,3 +117,6 @@ dist
 
 # lock files
 package-lock.json
+
+# macos
+.DS_Store

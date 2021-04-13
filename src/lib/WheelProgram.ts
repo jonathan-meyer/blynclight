@@ -1,4 +1,4 @@
-import Blynclight from "./Blynclight";
+import { Blynclight } from "./Blynclight";
 import ColorWheel from "./ColorWheel";
 import { LoggerFactory } from "./Logger";
 import Program from "./Program";

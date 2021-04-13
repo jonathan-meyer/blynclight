@@ -2,22 +2,20 @@ import Color from "color";
 import { HID } from "node-hid";
 import { LoggerFactory } from "./Logger";
 
-const log = LoggerFactory.getLogger("blynclight:device");
+const logger = LoggerFactory.getLogger("blynclight:device");
 
-class Blynclight {
-  public static readonly vid: number = 0x0e53;
-  public static readonly pid: number = 0x2516;
+export class Blynclight {
+  public static readonly VID: number = 0x0e53;
+  public static readonly PID: number = 0x2516;
 
-  private color: Color;
+  private color: Color = Color();
   private device: HID;
 
   constructor(vid: number, pid: number) {
-    this.color = new Color();
     this.device = new HID(vid, pid);
   }
 
-  setColor(color: Color) {
-    //log.debug(`[set: ${color}]`);
+  setColor(color: Color): void {
     this.color = color;
     this.device.write([
       0x00,
@@ -32,17 +30,17 @@ class Blynclight {
     ]);
   }
 
-  getColor() {
+  getColor(): Color {
     return this.color;
   }
 
   on(): void {
-    log.debug("[on]");
+    logger.debug("[on]");
     this.setColor(Color("white"));
   }
 
   off(): void {
-    log.debug("[off]");
+    logger.debug("[off]");
     this.setColor(Color("black"));
   }
 
@@ -55,4 +53,26 @@ class Blynclight {
   }
 }
 
-export default Blynclight;
+export class BlynclightFactory {
+  private static lights: { [index: string]: Blynclight } = {};
+
+  static async getLight(vid: number, pid: number): Promise<Blynclight> {
+    const id = `${vid}:${pid}`;
+    let timeout = 1000;
+    let restartCount = 0;
+
+    while (!this.lights[id]) {
+      try {
+        this.lights[id] = new Blynclight(vid, pid);
+      } catch (err) {
+        logger.error(err.message);
+        await new Promise((resolve) =>
+          setTimeout(resolve, timeout * (restartCount / 10))
+        );
+        restartCount++;
+      }
+    }
+
+    return this.lights[id];
+  }
+}

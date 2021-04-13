@@ -7,10 +7,12 @@ export interface Logger {
 }
 
 class LoggerImpl implements Logger {
+  private namesapce: string;
   private _debug: any;
   private _error: any;
 
   constructor(namesapce: string) {
+    this.namesapce = namesapce;
     this._debug = Debug(namesapce);
     this._error = Debug(namesapce);
 
@@ -23,7 +25,11 @@ class LoggerImpl implements Logger {
   }
 
   info(...args: any): void {
-    this._debug(...args);
+    if (Debug.enabled(this.namesapce)) {
+      this._debug(...args);
+    } else {
+      console.log(...args);
+    }
   }
 
   error(...args: any): void {

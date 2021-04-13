@@ -1,5 +1,5 @@
 import Color from "color";
-import Blynclight from "./Blynclight";
+import { Blynclight } from "./Blynclight";
 import { LoggerFactory } from "./Logger";
 import Program from "./Program";
 
@@ -16,6 +16,7 @@ class UsaProgram extends Program {
     Color("blue"),
     Color("blue"),
   ];
+
   private mix: number = 0;
 
   constructor(light: Blynclight) {
@@ -31,8 +32,10 @@ class UsaProgram extends Program {
     this.mix = this.mix + 0.03;
 
     if (this.mix > 1) {
+      // rotate the colors in the color array
       let c = this.colors.shift();
       if (c) this.colors.push(c);
+
       this.mix = 0;
     }
   }

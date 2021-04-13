@@ -22,6 +22,8 @@ class ProgramManager {
   start(id: string): void {
     logger.debug(`[start]: ${id}`);
 
+    this.stopAll();
+    
     this.programs
       .filter((program) => program.id === id)
       .map((program) => program.start());

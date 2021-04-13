@@ -1,6 +1,6 @@
 import Color from "color";
 import express, { Router } from "express";
-import Blynclight from "../lib/Blynclight";
+import { Blynclight } from "../lib/Blynclight";
 import { LoggerFactory } from "../lib/Logger";
 
 const logger = LoggerFactory.getLogger("blynclight:light:router");

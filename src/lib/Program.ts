@@ -4,7 +4,6 @@ const logger = LoggerFactory.getLogger("blynclight:Program");
 
 abstract class Program {
   readonly id: string;
-
   private t: any = null;
 
   constructor(id: string) {
@@ -17,15 +16,24 @@ abstract class Program {
   onStop(): void {}
 
   start(interval?: number): void {
-    logger.debug(`start program: ${this.id}`);
+    logger.debug(`[start]: ${this.id}`);
 
-    this.t = setInterval(() => this.run(), interval || 25);
+    this.t = setInterval(() => {
+      try {
+        this.run();
+      } catch (err) {
+        logger.error(`[error]: ${this.id}: ${err.message}`);
+        this.stop();
+      }
+    }, interval || 25);
+
     this.onStart();
   }
 
   stop(): void {
     if (this.t) {
       clearInterval(this.t);
+
       this.t = null;
       this.onStop();
 

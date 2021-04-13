@@ -1,18 +1,32 @@
+import UsaProgram from "./lib/UsaProgram";
+import WheelProgram from "./lib/WheelProgram";
+import { Blynclight, BlynclightFactory } from "./lib/Blynclight";
 import { LoggerFactory } from "./lib/Logger";
-import { app, light, programs } from "./server";
+import ProgramManager from "./lib/ProgramManager";
+import server from "./server";
 
 const port = process.env.PORT || 3000;
 const logger = LoggerFactory.getLogger("blynclight:main");
+const programs: ProgramManager = new ProgramManager();
 
-programs.start("usa");
+BlynclightFactory.getLight(Blynclight.VID, Blynclight.PID)
+  .then((light) => {
+    programs.add(new WheelProgram(light));
+    programs.add(new UsaProgram(light));
 
-process.on("SIGINT", function () {
-  logger.debug("[stopping all programs]");
-  programs.stopAll();
-  light.off();
-  process.exit();
-});
+    programs.start("usa");
 
-app.listen(port, () => {
-  logger.info("Listeing to port: %d", port);
-});
+    process.on("SIGINT", function () {
+      logger.debug("[stopping all programs]");
+      programs.stopAll();
+      light.off();
+      process.exit();
+    });
+
+    server(light, programs).listen(port, () => {
+      logger.info("Listeing to port: %d", port);
+    });
+  })
+  .catch((err) => {
+    console.error(err);
+  });
