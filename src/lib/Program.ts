@@ -21,7 +21,7 @@ abstract class Program {
     this.t = setInterval(() => {
       try {
         this.run();
-      } catch (err:any) {
+      } catch (err: any) {
         logger.error(`[error]: ${this.id}: ${err.message}`);
         this.stop();
       }

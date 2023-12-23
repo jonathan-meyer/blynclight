@@ -1,16 +1,14 @@
 {
   "name": "blynclight",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist/index.js",
   "engines": {
     "node": "20.x"
   },
   "scripts": {
-    "prebuild": "npm run clean",
-    "clean": "rimraf dist coverage",
+    "start": "ts-node src/index.ts",
     "build": "tsc",
-    "start": "node .",
-    "dev": "npm run clean && tsc --watch",
+    "clean": "rimraf dist coverage",
     "monitor": "pm2 monit"
   },
   "author": "Jonathan Meyer <jon@stej.com>",
@@ -25,6 +23,7 @@
     "node-hid": "^3.0.0",
     "rimraf": "^5.0.5",
     "supports-color": "^9.4.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
   "devDependencies": {

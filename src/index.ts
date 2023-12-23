@@ -1,13 +1,15 @@
-import UsaProgram from "./lib/UsaProgram";
-import WheelProgram from "./lib/WheelProgram";
 import { Blynclight, BlynclightFactory } from "./lib/Blynclight";
 import { LoggerFactory } from "./lib/Logger";
 import ProgramManager from "./lib/ProgramManager";
+import UsaProgram from "./lib/UsaProgram";
+import WheelProgram from "./lib/WheelProgram";
 import server from "./server";
 
 const port = process.env.PORT || 3000;
 const logger = LoggerFactory.getLogger("blynclight:main");
 const programs: ProgramManager = new ProgramManager();
+
+logger.info("looking for Blynclight");
 
 BlynclightFactory.getLight(Blynclight.VID, Blynclight.PID)
   .then((light) => {
@@ -28,5 +30,5 @@ BlynclightFactory.getLight(Blynclight.VID, Blynclight.PID)
     });
   })
   .catch((err) => {
-    console.error(err);
+    logger.error(err);
   });
