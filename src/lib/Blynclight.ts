@@ -64,7 +64,7 @@ export class BlynclightFactory {
     while (!this.lights[id]) {
       try {
         this.lights[id] = new Blynclight(vid, pid);
-      } catch (err) {
+      } catch (err:any) {
         logger.error(err.message);
         await new Promise((resolve) =>
           setTimeout(resolve, timeout * (restartCount / 10))
