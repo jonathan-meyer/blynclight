@@ -1,10 +1,10 @@
-import { LoggerFactory } from "./Logger";
+import { LoggerFactory } from './Logger';
 
-const logger = LoggerFactory.getLogger("blynclight:Program");
+const logger = LoggerFactory.getLogger('blynclight:Program');
 
 abstract class Program {
   readonly id: string;
-  private t: any = null;
+  private t?: NodeJS.Timeout;
 
   constructor(id: string) {
     this.id = id;
@@ -34,11 +34,15 @@ abstract class Program {
     if (this.t) {
       clearInterval(this.t);
 
-      this.t = null;
+      this.t = undefined;
       this.onStop();
 
       logger.debug(`stop program: ${this.id}`);
     }
+  }
+
+  isRunning(): boolean {
+    return this.t != undefined;
   }
 
   toJSON() {

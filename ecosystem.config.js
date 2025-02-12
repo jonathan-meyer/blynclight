@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "Blynclight Server",
       script: "./dist/index.js",
-      watch: "./dist/",
+      watch: true,
       instances: 1,
       env: {
         NODE_ENV: "development",

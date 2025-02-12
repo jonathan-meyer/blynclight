@@ -1,13 +1,13 @@
-import { LoggerFactory } from "./Logger";
-import Program from "./Program";
+import { LoggerFactory } from './Logger';
+import Program from './Program';
 
-const logger = LoggerFactory.getLogger("blynclight:ProgramManager");
+const logger = LoggerFactory.getLogger('blynclight:ProgramManager');
 
 class ProgramManager {
   private programs: Program[] = [];
 
   add(program: Program): void {
-    logger.debug("[add]");
+    logger.debug('[add]');
 
     this.programs.push(program);
   }
@@ -23,7 +23,7 @@ class ProgramManager {
     logger.debug(`[start]: ${id}`);
 
     this.stopAll();
-    
+
     this.programs
       .filter((program) => program.id === id)
       .map((program) => program.start());
@@ -38,9 +38,13 @@ class ProgramManager {
   }
 
   stopAll(): void {
-    logger.debug("[stop all]");
+    logger.debug('[stop all]');
 
     this.programs.map((program) => program.stop());
+  }
+
+  isRunning(): boolean {
+    return this.programs.filter((p) => p.isRunning()).length > 0;
   }
 
   toJSON() {

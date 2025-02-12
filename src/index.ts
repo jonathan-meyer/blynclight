@@ -16,7 +16,7 @@ BlynclightFactory.getLight(Blynclight.VID, Blynclight.PID)
     programs.add(new WheelProgram(light));
     programs.add(new UsaProgram(light));
 
-    programs.start("usa");
+    programs.start(WheelProgram.ID);
 
     process.on("SIGINT", function () {
       logger.debug("[stopping all programs]");

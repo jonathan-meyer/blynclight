@@ -1,24 +1,26 @@
-import { Blynclight } from "./Blynclight";
-import ColorWheel from "./ColorWheel";
-import { LoggerFactory } from "./Logger";
-import Program from "./Program";
+import { Blynclight } from './Blynclight';
+import ColorWheel from './ColorWheel';
+import { LoggerFactory } from './Logger';
+import Program from './Program';
 
-const logger = LoggerFactory.getLogger("blynclight:wheel-program");
+const logger = LoggerFactory.getLogger('blynclight:wheel-program');
 
 class WheelProgram extends Program {
+  public static ID: string = 'wheel';
+
   readonly wheel: ColorWheel = new ColorWheel();
   private light: Blynclight;
 
   constructor(light: Blynclight) {
-    super("wheel");
+    super(WheelProgram.ID);
 
-    logger.debug("[CTOR]");
+    logger.debug('[CTOR]');
 
     this.light = light;
   }
 
   onStart(): void {
-    logger.debug("[start]");
+    logger.debug('[start]');
     this.light.on();
   }
 
@@ -27,7 +29,7 @@ class WheelProgram extends Program {
   }
 
   onStop(): void {
-    logger.debug("[stop]");
+    logger.debug('[stop]');
     this.light.off();
   }
 }
