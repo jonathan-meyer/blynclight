@@ -43,39 +43,41 @@ export default (light: Blynclight, programs: ProgramManager): Router => {
 
       switch (mode) {
         case 'blink':
-          if (color) {
-            programs.stopAll();
-            lightColor = color;
-            lightMode = mode;
-            light.setColor(lightColor, 'med');
-          } else {
-            res.status(400);
-          }
+          programs.stopAll();
+          lightColor = color ?? lightColor;
+          lightMode = mode;
+          light.setColor(lightColor, 'med');
+          res.json(light);
           break;
 
         case 'pulse':
+          programs.stopAll();
+          lightColor = color ?? lightColor;
+          lightMode = mode;
+          light.setColor(lightColor, 'slow');
+          res.json(light);
           break;
 
         case 'steady':
-          if (color) {
-            programs.stopAll();
-            lightColor = color;
-            lightMode = mode;
-            light.setColor(lightColor);
-          } else {
-            res.status(400);
-          }
+          programs.stopAll();
+          lightColor = color ?? lightColor;
+          lightMode = mode;
+          light.setColor(lightColor);
+          res.json(light);
           break;
 
         case 'off':
           lightMode = mode;
           programs.stopAll();
           light.off();
+          res.json(light);
           break;
 
         default:
           res.status(400);
       }
+
+      res.end();
     })
 
     .get('*', (req, res) => {

@@ -4,6 +4,8 @@ const logger = LoggerFactory.getLogger('blynclight:Program');
 
 abstract class Program {
   readonly id: string;
+
+  protected options?: Record<string, string>;
   private t?: NodeJS.Timeout;
 
   constructor(id: string) {
@@ -15,9 +17,10 @@ abstract class Program {
   onStart(): void {}
   onStop(): void {}
 
-  start(interval?: number): void {
-    logger.debug(`[start]: ${this.id}`);
+  start(options?: Record<string, string>, interval?: number): void {
+    logger.debug(`[start]: ${this.id}`, options);
 
+    this.options = options;
     this.t = setInterval(() => {
       try {
         this.run();
@@ -34,7 +37,9 @@ abstract class Program {
     if (this.t) {
       clearInterval(this.t);
 
+      this.options = undefined;
       this.t = undefined;
+
       this.onStop();
 
       logger.debug(`stop program: ${this.id}`);
@@ -46,7 +51,11 @@ abstract class Program {
   }
 
   toJSON() {
-    return { id: this.id, running: this.t !== null };
+    return {
+      id: this.id,
+      options: this.options,
+      running: this.isRunning(),
+    };
   }
 }
 

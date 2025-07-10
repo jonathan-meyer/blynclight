@@ -1,37 +1,43 @@
-import express, { Router } from "express";
-import { LoggerFactory } from "../lib/Logger";
-import ProgramManager from "../lib/ProgramManager";
+import express, { Router } from 'express';
+import { LoggerFactory } from '../lib/Logger';
+import ProgramManager from '../lib/ProgramManager';
 
-const logger = LoggerFactory.getLogger("blynclight:program:router");
+const logger = LoggerFactory.getLogger('blynclight:program:router');
 
 export default (programs: ProgramManager): Router =>
   express
     .Router()
 
-    .get("/", (req, res) => {
+    .get('/', (req, res) => {
       res.json(programs);
     })
-
-    .post("/", (req, res) => {
-      const { start, stop, stopAll } = req.body;
-
-      logger.debug({ start, stop });
-
-      if (start) {
-        programs.start(start);
-      }
-
-      if (stop) {
-        programs.stop(stop);
-      }
-
-      if (stopAll === "true") {
-        programs.stopAll();
-      }
-
-      res.json(programs);
+    .get('/stop', (req, res) => {
+      programs.stopAll();
     })
 
-    .get("*", (req, res) => {
-      res.status(404).json({ 404: "Not Found" });
+    .get('/:id', (req, res) => {
+      const { id } = req.params;
+      const program = programs.get(id);
+      program ? res.json(program) : res.sendStatus(404);
+    })
+    .get('/:id/start', (req, res) => {
+      const { id } = req.params;
+      programs.start(id) ? res.json(programs.get(id)) : res.sendStatus(404);
+    })
+    .get('/:id/stop', (req, res) => {
+      const { id } = req.params;
+      programs.stop(id) ? res.json(programs.get(id)) : res.sendStatus(404);
+    })
+
+    .post('/:id', (req, res) => {
+      const { id } = req.params;
+      const options = req.body;
+
+      programs.start(id, options)
+        ? res.json(programs.get(id))
+        : res.sendStatus(404);
+    })
+
+    .get('*', (req, res) => {
+      res.sendStatus(404);
     });

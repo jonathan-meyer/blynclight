@@ -12,6 +12,10 @@ class ProgramManager {
     this.programs.push(program);
   }
 
+  get(id: string): Program | undefined {
+    return this.programs.find((program) => program.id === id);
+  }
+
   map<U>(
     callbackfn: (value: Program, index: number, array: Program[]) => U,
     thisArg?: any
@@ -19,22 +23,26 @@ class ProgramManager {
     return this.programs.map(callbackfn, thisArg);
   }
 
-  start(id: string): void {
-    logger.debug(`[start]: ${id}`);
+  start(id: string, options?: Record<string, string>): boolean {
+    logger.debug(`[start]: ${id}`, options);
 
     this.stopAll();
 
-    this.programs
-      .filter((program) => program.id === id)
-      .map((program) => program.start());
+    return (
+      this.programs
+        .filter((program) => program.id === id)
+        .map((program) => program.start(options)).length > 0
+    );
   }
 
-  stop(id: string): void {
+  stop(id: string): boolean {
     logger.debug(`[stop]: ${id}`);
 
-    this.programs
-      .filter((program) => program.id === id)
-      .map((program) => program.stop());
+    return (
+      this.programs
+        .filter((program) => program.id === id)
+        .map((program) => program.stop()).length > 0
+    );
   }
 
   stopAll(): void {
